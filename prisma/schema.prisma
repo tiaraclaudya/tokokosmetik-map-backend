@@ -1,0 +1,96 @@
+// This is your Prisma schema file for Hotel Laundry System
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model DataToko {
+  id                           String   @id @default(uuid()) // Atau pakai Google ID jika unik
+  query                        String
+  name                         String
+  nameForEmails                String   @map("name_for_emails")
+  subtypes                     String?
+  category                     String
+  type                         String
+  phone                        String?
+  website                      String?
+  address                      String   @db.Text
+  street                       String?
+  city                         String
+  county                       String?
+  state                        String
+  stateCode                    String?  @map("state_code")
+  postalCode                   Int?     @map("postal_code")
+  country                      String
+  countryCode                  String   @map("country_code")
+  latitude                     Float
+  longitude                    Float
+  h3                           String?
+  timeZone                     String   @map("time_zone")
+  plusCode                     String?  @map("plus_code")
+  areaService                  Boolean  @map("area_service")
+  rating                       Float?
+  reviews                      Int      @default(0)
+  reviewsLink                  String?  @map("reviews_link") @db.Text
+  reviewsTags                  Json?    @map("reviews_tags")
+  
+  // Menyimpan breakdown rating (1-5) dalam satu objek Json
+  reviewsPerScore              Json     @map("reviews_per_score")
+  reviewsPerScore1             Int      @default(0) @map("reviews_per_score_1")
+  reviewsPerScore2             Int      @default(0) @map("reviews_per_score_2")
+  reviewsPerScore3             Int      @default(0) @map("reviews_per_score_3")
+  reviewsPerScore4             Int      @default(0) @map("reviews_per_score_4")
+  reviewsPerScore5             Int      @default(0) @map("reviews_per_score_5")
+  
+  photosCount                  Int      @default(0) @map("photos_count")
+  photo                        String?  @db.Text
+  streetView                   String?  @map("street_view") @db.Text
+  logo                         String?  @db.Text
+  locatedIn                    String?  @map("located_in")
+  locatedGoogleId              String?  @map("located_google_id")
+  businessStatus               String   @map("business_status")
+  
+  // Jam kerja disimpan sebagai Json karena struktur harinya dinamis (array)
+  workingHours                 Json     @map("working_hours")
+  workingHoursCsvCompatible    String?  @map("working_hours_csv_compatible") @db.Text
+  otherHours                   Json?    @map("other_hours")
+  
+  popularTimes                 Json?    @map("popular_times")
+  typicalTimeSpent             String?  @map("typical_time_spent")
+  range                        String?
+  prices                       String?
+  reservationLinks             Json?    @map("reservation_links")
+  bookingAppointmentLink       String?  @map("booking_appointment_link") @db.Text
+  menuLink                     String?  @map("menu_link") @db.Text
+  orderLinks                   Json?    @map("order_links")
+  
+  // Data fasilitas/tentang bisnis disimpan sebagai Json fleksibel
+  about                        Json?
+  
+  description                  String?  @db.Text
+  posts                        Json?
+  verified                     Boolean  @default(false)
+  
+  // ID dari Google bisa sangat panjang, amankan dengan String atau Decimal jika perlu
+  ownerId                      String?  @map("owner_id") 
+  ownerTitle                   String?  @map("owner_title")
+  ownerLink                    String?  @map("owner_link") @db.Text
+  locationLink                 String?  @map("location_link") @db.Text
+  locationReviewsLink          String?  @map("location_reviews_link") @db.Text
+  
+  placeId                      String   @unique @map("place_id")
+  googleId                     String   @unique @map("google_id")
+  cid                          String?  // Diubah ke String karena angka e+19 rawan overflow di MySQL Int
+  kgmid                        String?
+  reviewsId                    String?  @map("reviews_id")
+
+  createdAt                    DateTime @default(now()) @map("created_at")
+  updatedAt                    DateTime @updatedAt @map("updated_at")
+}
